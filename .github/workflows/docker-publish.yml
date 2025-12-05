@@ -52,3 +52,30 @@ jobs:
           push: true
           # 注意: 镜像名称必须全部小写
           tags: ghcr.io/${{ github.repository_owner }}/ci-cd-practice:latest
+
+
+      # 【选项三作业部分】发送构建结果通知  
+      - name: Send Build Status Notification to Lark
+        # 使用 if: always()确保该步骤运行，无论之前的steps成功、失败或取消
+        if: always() 
+        run: |
+          # 1. 获取当前 Job 的状态 (success, failure, cancelled)
+          JOB_RESULT="${{ job.status }}"
+          
+          # 2. 构造 飞书的 JSON 消息体
+          if [ "$JOB_RESULT" == "success" ]; then
+            STATUS="【成功】构建成功！"
+          else
+            STATUS="【失败】构建失败！请检查日志。"
+          fi
+          
+          MESSAGE="${STATUS}
+          仓库: ${{ github.repository }}
+          分支: ${{ github.ref_name }}
+          查看运行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          
+          # 3. 使用 curl 发送报警到 Lark Webhook
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d "{\"msg_type\":\"text\",\"content\":{\"text\":\"${MESSAGE}\"}}" \
+          ${{ secrets.LARK_WEBHOOK }}
