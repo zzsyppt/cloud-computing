@@ -69,7 +69,7 @@ jobs:
             STATUS="【失败】构建失败！请检查日志。"
           fi
           
-          MESSAGE="${STATUS}
+          MESSAGE_TEXT="${STATUS}
           仓库: ${{ github.repository }}
           分支: ${{ github.ref_name }}
           查看运行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
