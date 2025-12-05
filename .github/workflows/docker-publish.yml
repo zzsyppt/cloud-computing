@@ -62,15 +62,25 @@ jobs:
           # 1. 获取当前 Job 的状态 (success, failure, cancelled)
           JOB_RESULT="${{ job.status }}"
           
-          # 2. 构造 飞书的 JSON 消息体
-          if [ "$JOB_RESULT" == "success" ]; then
-            STATUS="【成功】构建成功！"
-          else
-            STATUS="【失败】构建失败！请检查日志。"
-          fi
+          # 2. 获取提交信息、提交者、提交时间
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          COMMIT_AUTHOR="${{ github.event.head_commit.author.name }}" 
+          COMMIT_TIME="${{ github.event.head_commit.timestamp }}"
+
+          # 构造返回的消息内容
+          MESSAGE_TEXT=$(cat <<EOM
+          [${{ github.repository }}] 状态通知
+          ---
+          **状态**: ${STATUS}
+          **分支**: ${{ github.ref_name }}
+          **提交者**: ${COMMIT_AUTHOR}
+          **构建时间**: ${COMMIT_TIME}
+          **Commit Message**: ${COMMIT_MSG}
+          ---
+          **查看运行**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          EOM
+          ) 
           
-          # 信息内容
-          MESSAGE_TEXT="[${{ github.repository }}] 构建 ${JOB_RESULT}！分支: ${{ github.ref_name }}。状态: ${STATUS}"
           # 3. 使用 curl 发送报警到 Lark Webhook
           # 严格遵循飞书文档的 JSON 格式
           curl -X POST \
