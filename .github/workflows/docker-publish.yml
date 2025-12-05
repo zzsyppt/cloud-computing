@@ -75,7 +75,8 @@ jobs:
           查看运行: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           
           # 3. 使用 curl 发送报警到 Lark Webhook
+          # 严格遵循飞书文档的 JSON 格式，使用单引号包裹 JSON，并在内部使用双引号。
           curl -X POST \
           -H "Content-Type: application/json" \
-          -d "{\"msg_type\":\"text\",\"content\":{\"text\":\"${MESSAGE}\"}}" \
+          -d "{\"msg_type\":\"text\",\"content\":{\"text\":\"${MESSAGE_TEXT}\"}}" \
           ${{ secrets.LARK_WEBHOOK }}
