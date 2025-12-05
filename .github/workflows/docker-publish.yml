@@ -68,7 +68,7 @@ jobs:
           **构建时间**: ${{ github.event.head_commit.timestamp }}\n\
           **Commit Message**: ${{ github.event.head_commit.message }}\n\
           ------\n\
-          **查看运行**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          **查看运行**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           
           # 使用 curl 发送报警到 Lark Webhook
           # 严格遵循飞书文档的 JSON 格式
